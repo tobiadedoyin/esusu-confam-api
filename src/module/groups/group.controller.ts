@@ -65,6 +65,7 @@ export class GroupController {
     @Req() req,
   ) {
     const adminId = req.user.id;
+    console.log(' admin id', adminId);
     return this.groupService.updateMemberStatus(memberId, dto.status, adminId);
   }
 

@@ -214,6 +214,7 @@ export class GroupsService {
     const group = await this.db.query.groups.findFirst({
       where: eq(groups.id, member.groupId),
     });
+
     if (!group || group.adminId !== adminId)
       throw new ForbiddenException('You are not the admin of this group');
 
@@ -229,7 +230,7 @@ export class GroupsService {
       await this.db
         .update(members)
         .set({ status: 'approved' })
-        .where(eq(members.userId, memberId));
+        .where(eq(members.id, memberId));
     } else {
       await this.db.delete(members).where(eq(members.id, memberId));
     }
@@ -261,12 +262,24 @@ export class GroupsService {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
-  async isUserAdminOfGroup(userId: string, groupId: string): Promise<boolean> {
+  async isUserAdminOfGroup(userId: string): Promise<boolean> {
     const member = await this.db.query.members.findFirst({
-      where: (m, { and, eq }) =>
-        and(eq(m.groupId, groupId), eq(m.userId, userId), eq(m.isAdmin, true)),
+      where: (m, { and, eq }) => and(eq(m.userId, userId), eq(m.isAdmin, true)),
     });
 
     return !!member;
   }
+
+  // async isUserAdminOfGroup(userId: string, groupId?: string): Promise<boolean> {
+  //   const whereClause = groupId
+  //     ? (m, { and, eq }) =>
+  //         and(eq(m.userId, userId), eq(m.groupId, groupId), eq(m.isAdmin, true))
+  //     : (m, { and, eq }) => and(eq(m.userId, userId), eq(m.isAdmin, true));
+
+  //   const member = await this.db.query.members.findFirst({
+  //     where: whereClause,
+  //   });
+
+  //   return !!member;
+  // }
 }

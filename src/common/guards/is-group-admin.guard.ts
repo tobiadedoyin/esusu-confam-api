@@ -19,12 +19,12 @@ export class IsGroupAdminGuard implements CanActivate {
     const userId = request.user.id;
 
     // Group ID might be from URL or body
-    const groupId =
-      request.params.groupId || request.params.id || request.body.groupId;
+    // const groupId =
+    //   request.params.groupId || request.params.id || request.body.groupId;
 
     const isAdmin = await this.groupsService.isUserAdminOfGroup(
       userId,
-      groupId,
+      // groupId,
     );
 
     if (!isAdmin) {
