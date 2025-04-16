@@ -15,6 +15,13 @@
       "when": 1744700083489,
       "tag": "0001_daily_kate_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1744709583319,
+      "tag": "0002_fresh_baron_strucker",
+      "breakpoints": true
     }
   ]
 }

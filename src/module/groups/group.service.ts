@@ -32,7 +32,15 @@ export class GroupsService {
   }
 
   async createGroup(dto: CreateGroupDto, userId: string) {
-    const code = dto.isPublic ? null : await this.generateCode();
+    const existingGroup = await this.db.query.groups.findFirst({
+      where: eq(groups.name, dto.name),
+    });
+
+    if (existingGroup) {
+      throw new BadRequestException('A group with this name already exists');
+    }
+
+    const code = dto.isPublic ? '-' : await this.generateCode();
 
     // Insert into groups tables
     const [group] = await this.db
@@ -177,7 +185,11 @@ export class GroupsService {
     if (group.adminId !== userId) throw new ForbiddenException('Access denied');
 
     const memberList = await this.db
-      .select({ firstName: users.firstName, lastName: users.lastName })
+      .select({
+        firstName: users.firstName,
+        lastName: users.lastName,
+        email: users.email,
+      })
       .from(members)
       .innerJoin(users, eq(members.userId, users.id))
       .where(and(eq(members.groupId, groupId), eq(members.status, 'approved')))

@@ -10,7 +10,7 @@ import { users } from './users.schema';
 
 export const groups = pgTable('groups', {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name').notNull(),
+  name: text('name').notNull().unique(),
   description: text('description').notNull(),
   maxCapacity: integer('max_capacity').notNull(),
   isPublic: boolean('is_public').notNull(),
