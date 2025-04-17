@@ -11,7 +11,7 @@ import { groups } from '../../drizzle/schema/groups.schema';
 import { members } from '../../drizzle/schema/members.schema';
 import { DRIZZLE } from '../../drizzle/drizzle.module';
 import { DrizzleDB } from '../../drizzle/types/drizzle';
-import { eq, count } from 'drizzle-orm';
+import { eq, count, and } from 'drizzle-orm';
 import { users } from '@/drizzle/schema/users.schema';
 
 @Injectable()
@@ -224,7 +224,9 @@ export class GroupsService {
       const groupMembers = await this.db
         .select()
         .from(members)
-        .where(eq(members.groupId, group.id));
+        .where(
+          and(eq(members.groupId, group.id), eq(members.status, 'approved')),
+        );
 
       if (groupMembers.length >= group.maxCapacity)
         throw new BadRequestException('Group is full');
