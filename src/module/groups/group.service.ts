@@ -189,6 +189,7 @@ export class GroupsService {
         firstName: users.firstName,
         lastName: users.lastName,
         email: users.email,
+        member_id: members.id,
       })
       .from(members)
       .innerJoin(users, eq(members.userId, users.id))
@@ -241,7 +242,7 @@ export class GroupsService {
 
   async removeMember(memberId: string, adminId: string) {
     const member = await this.db.query.members.findFirst({
-      where: eq(members.userId, memberId),
+      where: eq(members.id, memberId),
     });
     if (!member) throw new NotFoundException('Member not found');
 
@@ -251,7 +252,7 @@ export class GroupsService {
     if (!group || group.adminId !== adminId)
       throw new ForbiddenException('Only admin can remove members');
 
-    await this.db.delete(members).where(eq(members.userId, memberId));
+    await this.db.delete(members).where(eq(members.id, memberId));
 
     return {
       message: 'Member removed successfully',
