@@ -190,6 +190,7 @@ export class GroupsService {
         lastName: users.lastName,
         email: users.email,
         member_id: members.id,
+        status: members.status,
       })
       .from(members)
       .innerJoin(users, eq(members.userId, users.id))
